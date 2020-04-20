@@ -1,0 +1,7 @@
+domain: symcn.com
+repo: symcn/mid-operator
+resources:
+- group: devops
+  kind: Sidecar
+  version: v1beta1
+version: "2"
