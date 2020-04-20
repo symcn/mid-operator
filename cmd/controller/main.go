@@ -20,28 +20,18 @@ import (
 	"flag"
 	"os"
 
-	"k8s.io/apimachinery/pkg/runtime"
-	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	devopsv1beta1 "github.com/symcn/mid-operator/pkg/apis/devops/v1beta1"
 	// +kubebuilder:scaffold:imports
 	"github.com/symcn/mid-operator/pkg/controllers"
+	"github.com/symcn/mid-operator/pkg/k8sclient"
 )
 
 var (
-	scheme   = runtime.NewScheme()
-	setupLog = ctrl.Log.WithName("setup")
+	logger = ctrl.Log.WithName("setup")
 )
-
-func init() {
-	_ = clientgoscheme.AddToScheme(scheme)
-
-	_ = devopsv1beta1.AddToScheme(scheme)
-	// +kubebuilder:scaffold:scheme
-}
 
 func main() {
 	var metricsAddr string
@@ -55,33 +45,34 @@ func main() {
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme:             scheme,
+		Scheme:             k8sclient.GetScheme(),
 		MetricsBindAddress: metricsAddr,
 		Port:               9443,
 		LeaderElection:     enableLeaderElection,
 		LeaderElectionID:   "4ebbdc6d.symcn.com",
 	})
 	if err != nil {
-		setupLog.Error(err, "unable to start manager")
+		logger.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
 
 	opt := &controllers.ControllersManagerOption{
-		EnableSidecar: true,
+		EnableSidecar: false,
+		EnableIstio:   true,
 	}
 
 	// Setup all Controllers
-	setupLog.Info("Setting up controller")
+	logger.Info("Setting up controller")
 	if err := controllers.AddToManager(mgr, opt); err != nil {
-		setupLog.Error(err, "unable to register controllers to the manager")
+		logger.Error(err, "unable to register controllers to the manager")
 		os.Exit(1)
 	}
 
 	// +kubebuilder:scaffold:builder
 
-	setupLog.Info("starting manager")
+	logger.Info("starting manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
-		setupLog.Error(err, "problem running manager")
+		logger.Error(err, "problem running manager")
 		os.Exit(1)
 	}
 }

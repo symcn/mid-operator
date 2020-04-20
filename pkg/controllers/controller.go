@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"github.com/symcn/mid-operator/pkg/controllers/istio"
 	"github.com/symcn/mid-operator/pkg/controllers/sidecar"
-
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
@@ -11,9 +11,12 @@ var AddToManagerFuncs []func(manager.Manager) error
 
 // AddToManager adds all Controllers to the Manager
 func AddToManager(m manager.Manager, opt *ControllersManagerOption) error {
-
 	if opt.EnableSidecar {
 		AddToManagerFuncs = append(AddToManagerFuncs, sidecar.Add)
+	}
+
+	if opt.EnableIstio {
+		AddToManagerFuncs = append(AddToManagerFuncs, istio.Add)
 	}
 
 	for _, f := range AddToManagerFuncs {

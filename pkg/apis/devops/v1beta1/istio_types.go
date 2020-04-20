@@ -20,39 +20,47 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// SidecarSpec defines the desired state of Sidecar
-type SidecarSpec struct {
+// PilotSpec defines the desired state of Pilot
+type PilotSpec struct {
 	Foo string `json:"foo,omitempty"`
 }
 
-// SidecarStatus defines the observed state of Sidecar
-type SidecarStatus struct {
+// PilotStatus defines the observed state of Pilot
+type PilotStatus struct {
+}
+
+// IstioSpec defines the desired state of Istio
+type IstioSpec struct {
+	Pilot PilotSpec `json:"pilot,omitempty"`
+}
+
+// IstioStatus defines the observed state of Istio
+type IstioStatus struct {
 }
 
 // +kubebuilder:object:root=true
 
-// Sidecar is the Schema for the sidecars API
+// Istio is the Schema for the Istios API
 // +k8s:openapi-gen=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:shortName=sd
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created. "
-type Sidecar struct {
+type Istio struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   SidecarSpec   `json:"spec,omitempty"`
-	Status SidecarStatus `json:"status,omitempty"`
+	Spec   IstioSpec   `json:"spec,omitempty"`
+	Status IstioStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// SidecarList contains a list of Sidecar
-type SidecarList struct {
+// IstioList contains a list of Istio
+type IstioList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Sidecar `json:"items"`
+	Items           []Istio `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Sidecar{}, &SidecarList{})
+	SchemeBuilder.Register(&Istio{}, &IstioList{})
 }

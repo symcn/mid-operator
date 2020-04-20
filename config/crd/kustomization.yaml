@@ -3,6 +3,7 @@
 # It should be run by config/default
 resources:
 - bases/devops.symcn.com_sidecars.yaml
+- bases/devops.symcn.com_istios.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:
