@@ -21,13 +21,12 @@ import (
 
 	"github.com/go-logr/logr"
 	devopsv1beta1 "github.com/symcn/mid-operator/pkg/apis/devops/v1beta1"
-	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	networkingv1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
@@ -71,7 +70,7 @@ func (r *IstioReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("istio", req.NamespacedName)
 
 	ctx := context.Background()
-	logger := r.Log.WithValues("key", req.NamespacedName, "id", uuid.Must(uuid.NewV4()).String())
+	logger := r.Log.WithValues("key", req.NamespacedName)
 
 	istio := &devopsv1beta1.Istio{}
 	err := r.Client.Get(ctx, req.NamespacedName, istio)
@@ -85,7 +84,7 @@ func (r *IstioReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	}
 
 	// test
-	vsList := &networkingv1beta1.VirtualServiceList{}
+	vsList := &networkingv1alpha3.VirtualServiceList{}
 	err = r.Client.List(ctx, vsList)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
@@ -99,6 +98,22 @@ func (r *IstioReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	for i := range vsList.Items {
 		vs := &vsList.Items[i]
 		logger.Info("VirtualService", "ns", vs.Namespace, "name", vs.Name)
+	}
+
+	envoyFilters := &networkingv1alpha3.EnvoyFilterList{}
+	err = r.Client.List(ctx, envoyFilters)
+	if err != nil {
+		if apierrors.IsNotFound(err) {
+			return reconcile.Result{}, nil
+		}
+
+		logger.Error(err, "failed to get EnvoyFilterList")
+		return reconcile.Result{}, err
+	}
+
+	for i := range envoyFilters.Items {
+		envoyFilter := &envoyFilters.Items[i]
+		logger.Info("VirtualService", "ns", envoyFilter.Namespace, "name", envoyFilter.Name)
 	}
 
 	return ctrl.Result{}, nil

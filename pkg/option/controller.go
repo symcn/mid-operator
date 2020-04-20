@@ -14,25 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package option
 
-import (
-	"fmt"
-	"math/rand"
-	"os"
-	"time"
+type ControllersManagerOption struct {
+	EnableSidecar bool
+	EnableIstio   bool
+}
 
-	"github.com/symcn/mid-operator/cmd/controller/app"
-	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
-)
-
-func main() {
-	rand.Seed(time.Now().UnixNano())
-
-	rootCmd := app.GetRootCmd(os.Args[1:])
-
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(-1)
+func DefaultControllersManagerOption() *ControllersManagerOption {
+	return &ControllersManagerOption{
+		EnableIstio:   true,
+		EnableSidecar: false,
 	}
 }

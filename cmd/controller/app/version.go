@@ -14,25 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package app
 
 import (
-	"fmt"
-	"math/rand"
-	"os"
-	"time"
+	"github.com/symcn/mid-operator/pkg/version"
 
-	"github.com/symcn/mid-operator/cmd/controller/app"
-	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
 )
 
-func main() {
-	rand.Seed(time.Now().UnixNano())
-
-	rootCmd := app.GetRootCmd(os.Args[1:])
-
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(-1)
+// NewCmdVersion returns a cobra command for fetching versions
+func NewCmdVersion() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "version",
+		Short: "Print the version information",
+		Long:  "Print the version information for the current context",
+		Run: func(cmd *cobra.Command, args []string) {
+			v := version.GetVersion()
+			fmt.Fprintf(os.Stdout, "version: %v\n", v.String())
+		},
 	}
+
+	return cmd
 }
