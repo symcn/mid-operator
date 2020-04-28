@@ -4,6 +4,8 @@
 resources:
 - bases/devops.symcn.com_sidecars.yaml
 - bases/devops.symcn.com_istios.yaml
+- bases/devops.symcn.com_remoteistios.yaml
+- bases/devops.symcn.com_meshgateways.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:
