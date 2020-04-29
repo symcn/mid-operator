@@ -1,8 +1,0 @@
-apiVersion: devops.symcn.com/v1beta1
-kind: Istio
-metadata:
-  name: istio
-  namespace: sym-admin
-spec:
-  pilot:
-    foo: test

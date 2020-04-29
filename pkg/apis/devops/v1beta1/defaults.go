@@ -276,16 +276,6 @@ func SetDefaults(config *Istio) {
 	if config.Spec.SidecarInjector.Init.Resources == nil {
 		config.Spec.SidecarInjector.Init.Resources = defaultInitResources
 	}
-	// SDS config
-	if config.Spec.SDS.Enabled == nil {
-		config.Spec.SDS.Enabled = utils.BoolPointer(false)
-	}
-	if config.Spec.SDS.TokenAudience == "" {
-		config.Spec.SDS.TokenAudience = "istio-ca"
-	}
-	if config.Spec.SDS.UdsPath == "" {
-		config.Spec.SDS.UdsPath = "unix:/var/run/sds/uds_path"
-	}
 
 	// Proxy config
 	if config.Spec.Proxy.Image == "" {
@@ -454,24 +444,24 @@ func SetRemoteIstioDefaults(remoteconfig *RemoteIstio) {
 	}
 }
 
-// func (gw *MeshGateway) SetDefaults() {
-// 	if gw.Spec.ReplicaCount == nil {
-// 		gw.Spec.ReplicaCount = utils.IntPointer(defaultReplicaCount)
-// 	}
-// 	if gw.Spec.MinReplicas == nil {
-// 		gw.Spec.MinReplicas = utils.IntPointer(defaultReplicaCount)
-// 	}
-// 	if gw.Spec.MaxReplicas == nil {
-// 		gw.Spec.MaxReplicas = utils.IntPointer(defaultReplicaCount)
-// 	}
-// 	if gw.Spec.Resources == nil {
-// 		gw.Spec.Resources = defaultProxyResources
-// 	}
-//
-// 	if gw.Spec.Type == GatewayTypeIngress && gw.Spec.ServiceType == "" {
-// 		gw.Spec.ServiceType = defaultIngressGatewayServiceType
-// 	}
-// 	if gw.Spec.Type == GatewayTypeEgress && gw.Spec.ServiceType == "" {
-// 		gw.Spec.ServiceType = defaultEgressGatewayServiceType
-// 	}
-// }
+func (in *MeshGateway) SetDefaults() {
+	if in.Spec.ReplicaCount == nil {
+		in.Spec.ReplicaCount = utils.IntPointer(defaultReplicaCount)
+	}
+	if in.Spec.MinReplicas == nil {
+		in.Spec.MinReplicas = utils.IntPointer(defaultReplicaCount)
+	}
+	if in.Spec.MaxReplicas == nil {
+		in.Spec.MaxReplicas = utils.IntPointer(defaultReplicaCount)
+	}
+	if in.Spec.Resources == nil {
+		in.Spec.Resources = defaultProxyResources
+	}
+
+	if in.Spec.Type == GatewayTypeIngress && in.Spec.ServiceType == "" {
+		in.Spec.ServiceType = defaultIngressGatewayServiceType
+	}
+	if in.Spec.Type == GatewayTypeEgress && in.Spec.ServiceType == "" {
+		in.Spec.ServiceType = defaultEgressGatewayServiceType
+	}
+}

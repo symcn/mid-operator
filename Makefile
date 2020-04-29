@@ -45,6 +45,9 @@ vet:
 generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
+pre-build:
+	go run pkg/static/generate.go
+#	go generate ./pkg/... ./cmd/...
 
 # find or download controller-gen
 # download controller-gen if necessary

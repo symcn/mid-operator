@@ -1,0 +1,130 @@
+apiVersion: devops.symcn.com/v1beta1
+kind: Istio
+metadata:
+  name: istio-sample
+spec:
+  version: "1.5.2"
+  meshPolicy:
+    mtlsMode: PERMISSIVE
+  autoMtls: true
+  includeIPRanges: "*"
+  excludeIPRanges: ""
+  autoInjectionNamespaces:
+    - "mesh-demo"
+  controlPlaneSecurityEnabled: false
+  mountMtlsCerts: false
+  # priorityClassName: system-cluster-critical
+  defaultResources:
+    requests:
+      cpu: 10m
+  mixerlessTelemetry:
+    enabled: true
+  istiod:
+    enabled: true
+  pilot:
+    enabled: true
+    image: "docker.io/istio/pilot:1.5.2"
+    replicaCount: 1
+    minReplicas: 1
+    maxReplicas: 5
+    traceSampling: 1
+    resources:
+      requests:
+        cpu: 500m
+        memory: 2048Mi
+    certProvider: "istiod"
+  gateways:
+    enabled: true
+    ingress:
+      enabled: true
+      replicaCount: 1
+      minReplicas: 1
+      maxReplicas: 5
+      serviceType: "LoadBalancer"
+      loadBalancerIP: ""
+      serviceAnnotations: {}
+      serviceLabels: {}
+      ports:
+        - port: 15020
+          targetPort: 15020
+          name: status-port
+        - port: 80
+          targetPort: 80
+          name: http2
+        - port: 443
+          targetPort: 443
+          name: https
+        - port: 15443
+          targetPort: 15443
+          name: tls
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 2000m
+          memory: 1024Mi
+    egress:
+      enabled: false
+      replicaCount: 1
+      minReplicas: 1
+      maxReplicas: 5
+      serviceType: "ClusterIP"
+      serviceAnnotations: {}
+      serviceLabels: {}
+      ports:
+        - port: 80
+          targetPort: 80
+          name: http2
+        - port: 443
+          targetPort: 443
+          name: https
+        - port: 15443
+          targetPort: 15443
+          name: tls
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 2000m
+          memory: 256Mi
+    k8singress:
+      enabled: false
+  proxy:
+    image: "docker.io/istio/proxyv2:1.5.2"
+    accessLogFile: "/dev/stdout"
+    accessLogFormat: ""
+    accessLogEncoding: "TEXT"
+    enableCoreDump: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 2000m
+        memory: 1024Mi
+  proxyInit:
+    image: "docker.io/istio/proxyv2:1.5.2"
+  defaultPodDisruptionBudget:
+    enabled: true
+  outboundTrafficPolicy:
+    mode: ALLOW_ANY
+  tracing:
+    enabled: true
+    tracer: zipkin
+    zipkin:
+      address: zipkin.istio-system:9411
+  localityLB:
+    enabled: false
+    # distribute:
+    # - from: "us-central1/*"
+    #   to:
+    #     "us-central1/*": 80
+    #     "us-central2/*": 20
+    # failover:
+    # - from: us-east
+    #   to: eu-west
+    # - from: us-west
+    #   to: us-east
+  jwtPolicy: "first-party-jwt"

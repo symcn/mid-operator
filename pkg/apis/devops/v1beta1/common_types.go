@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+
 	corev1 "k8s.io/api/core/v1"
 )
 
@@ -36,18 +37,18 @@ type MeshNetworks struct {
 	Networks map[string]MeshNetwork `json:"networks"`
 }
 
-func (s *IstioSpec) SetMeshNetworks(networks *MeshNetworks) *IstioSpec {
-	s.meshNetworks = networks
-	return s
+func (in *IstioSpec) SetMeshNetworks(networks *MeshNetworks) *IstioSpec {
+	in.MeshNetworks = networks
+	return in
 }
 
-func (s *IstioSpec) GetMeshNetworks() *MeshNetworks {
-	return s.meshNetworks
+func (in *IstioSpec) GetMeshNetworks() *MeshNetworks {
+	return in.MeshNetworks
 }
 
-func (s *IstioSpec) GetMeshNetworksHash() string {
+func (in *IstioSpec) GetMeshNetworksHash() string {
 	hash := ""
-	j, err := json.Marshal(s.meshNetworks)
+	j, err := json.Marshal(in.MeshNetworks)
 	if err != nil {
 		return hash
 	}
@@ -250,4 +251,9 @@ type MeshGatewayConfiguration struct {
 	RequestedNetworkView string `json:"requestedNetworkView,omitempty"`
 	// If present will be appended to the environment variables of the container
 	AdditionalEnvVars []corev1.EnvVar `json:"additionalEnvVars,omitempty"`
+}
+
+type MixerlessTelemetryConfiguration struct {
+	// If set to true, experimental Mixerless http telemetry will be enabled
+	Enabled *bool `json:"enabled,omitempty"`
 }

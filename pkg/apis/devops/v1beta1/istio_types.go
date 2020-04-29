@@ -399,6 +399,9 @@ type IstioSpec struct {
 	// globally/universally unique.
 	MeshID string `json:"meshID,omitempty"`
 
+	// Mixerless telemetry configuration
+	MixerlessTelemetry *MixerlessTelemetryConfiguration `json:"mixerlessTelemetry,omitempty"`
+
 	//
 	MeshNetworks *MeshNetworks `json:"meshNetworks,omitempty"`
 

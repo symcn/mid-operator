@@ -7,10 +7,20 @@ metadata:
   name: istios.devops.symcn.com
 spec:
   additionalPrinterColumns:
+    - JSONPath: .status.Status
+      description: Status of the resource
+      name: Status
+      type: string
+    - JSONPath: .status.ErrorMessage
+      description: Error message
+      name: Error
+      type: string
+    - JSONPath: .status.GatewayAddress
+      description: Ingress gateway addresses of the resource
+      name: Ingress IPs
+      type: string
     - JSONPath: .metadata.creationTimestamp
-      description: 'CreationTimestamp is a timestamp representing the server time when
-      this object was created. '
-      name: AGE
+      name: Age
       type: date
   group: devops.symcn.com
   names:
@@ -57,3 +67,95 @@ spec:
     - name: v1beta1
       served: true
       storage: true
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: meshgateways.devops.symcn.com
+spec:
+  additionalPrinterColumns:
+    - JSONPath: .spec.type
+      description: Type of the gateway
+      name: Type
+      type: string
+    - JSONPath: .spec.serviceType
+      description: Type of the service
+      name: Service Type
+      type: string
+    - JSONPath: .status.Status
+      description: Status of the resource
+      name: Status
+      type: string
+    - JSONPath: .status.GatewayAddress
+      description: Ingress gateway addresses of the resource
+      name: Ingress IPs
+      type: string
+    - JSONPath: .status.ErrorMessage
+      description: Error message
+      name: Error
+      type: string
+    - JSONPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+  group: devops.symcn.com
+  names:
+    kind: MeshGateway
+    listKind: MeshGatewayList
+    plural: meshgateways
+    shortNames:
+      - mgw
+    singular: meshgateway
+  scope: Namespaced
+  subresources:
+    status: {}
+  version: v1beta1
+  versions:
+    - name: v1beta1
+      served: true
+      storage: true
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: remoteistios.devops.symcn.com
+spec:
+  additionalPrinterColumns:
+    - JSONPath: .status.Status
+      description: Status of the resource
+      name: Status
+      type: string
+    - JSONPath: .status.ErrorMessage
+      description: Error message
+      name: Error
+      type: string
+    - JSONPath: .status.GatewayAddress
+      description: Ingress gateway addresses of the resource
+      name: Ingress IPs
+      type: string
+    - JSONPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+  group: devops.symcn.com
+  names:
+    kind: RemoteIstio
+    listKind: RemoteIstioList
+    plural: remoteistios
+    singular: remoteistio
+  scope: Namespaced
+  subresources:
+    status: {}
+  version: v1beta1
+  versions:
+    - name: v1beta1
+      served: true
+      storage: true
+
+
