@@ -2747,37 +2747,6 @@ spec:
                 the scope where meshes will interact with each other, but it is not
                 required to be globally/universally unique.
               type: string
-            meshNetworks:
-              properties:
-                networks:
-                  additionalProperties:
-                    properties:
-                      endpoints:
-                        items:
-                          properties:
-                            fromCidr:
-                              type: string
-                            fromRegistry:
-                              type: string
-                          type: object
-                        type: array
-                      gateways:
-                        items:
-                          properties:
-                            address:
-                              type: string
-                            port:
-                              type: integer
-                          required:
-                          - address
-                          - port
-                          type: object
-                        type: array
-                    type: object
-                  type: object
-              required:
-              - networks
-              type: object
             meshPolicy:
               description: MeshPolicy configures the default MeshPolicy resource
               properties:
@@ -4010,8 +3979,6 @@ spec:
                         to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                       type: object
                   type: object
-                useMetadataExchangeFilter:
-                  type: boolean
               type: object
             proxyInit:
               description: Proxy Init configuration options
@@ -4023,6 +3990,8 @@ spec:
               description: ProxyWasm configuration options
               properties:
                 enabled:
+                  type: boolean
+                useMetadataExchangeFilter:
                   type: boolean
               type: object
             sidecarInjector:

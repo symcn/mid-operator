@@ -42,7 +42,8 @@ spec:
       maxReplicas: 5
       serviceType: "LoadBalancer"
       loadBalancerIP: ""
-      serviceAnnotations: {}
+      serviceAnnotations:
+        service.kubernetes.io/qcloud-loadbalancer-internal-subnetid: subnet-qt46ekc7
       serviceLabels: {}
       ports:
         - port: 15020
@@ -65,7 +66,7 @@ spec:
           cpu: 2000m
           memory: 1024Mi
     egress:
-      enabled: false
+      enabled: true
       replicaCount: 1
       minReplicas: 1
       maxReplicas: 5

@@ -9,7 +9,7 @@ import (
 	"github.com/symcn/mid-operator/pkg/utils"
 )
 
-func (r *Reconciler) service() runtime.Object {
+func (r *Reconciler) istiodService() runtime.Object {
 	return &corev1.Service{
 		ObjectMeta: templates.ObjectMeta(ServiceNameIstiod, istiodLabels, r.Config),
 		Spec: corev1.ServiceSpec{

@@ -160,7 +160,8 @@ type SidecarInjectorConfiguration struct {
 
 // ProxyWasmConfiguration defines config options for Envoy wasm
 type ProxyWasmConfiguration struct {
-	Enabled *bool `json:"enabled,omitempty"`
+	Enabled                   *bool `json:"enabled,omitempty"`
+	UseMetadataExchangeFilter *bool `json:"useMetadataExchangeFilter,omitempty"`
 }
 
 type GatewayConfiguration struct {
@@ -268,11 +269,10 @@ type ProxyConfiguration struct {
 	// cluster domain. Default value is "cluster.local"
 	ClusterDomain string `json:"clusterDomain,omitempty"`
 
-	EnvoyStatsD               EnvoyStatsD                     `json:"envoyStatsD,omitempty"`
-	EnvoyMetricsService       EnvoyServiceCommonConfiguration `json:"envoyMetricsService,omitempty"`
-	EnvoyAccessLogService     EnvoyServiceCommonConfiguration `json:"envoyAccessLogService,omitempty"`
-	ProtocolDetectionTimeout  *string                         `json:"protocolDetectionTimeout,omitempty"`
-	UseMetadataExchangeFilter *bool                           `json:"useMetadataExchangeFilter,omitempty"`
+	EnvoyStatsD              EnvoyStatsD                     `json:"envoyStatsD,omitempty"`
+	EnvoyMetricsService      EnvoyServiceCommonConfiguration `json:"envoyMetricsService,omitempty"`
+	EnvoyAccessLogService    EnvoyServiceCommonConfiguration `json:"envoyAccessLogService,omitempty"`
+	ProtocolDetectionTimeout *string                         `json:"protocolDetectionTimeout,omitempty"`
 
 	Lifecycle corev1.Lifecycle `json:"lifecycle,omitempty"`
 
@@ -398,12 +398,6 @@ type IstioSpec struct {
 	// meshes will interact with each other, but it is not required to be
 	// globally/universally unique.
 	MeshID string `json:"meshID,omitempty"`
-
-	// Mixerless telemetry configuration
-	MixerlessTelemetry *MixerlessTelemetryConfiguration `json:"mixerlessTelemetry,omitempty"`
-
-	//
-	MeshNetworks *MeshNetworks `json:"meshNetworks,omitempty"`
 
 	// The domain serves to identify the system with SPIFFE. (default "cluster.local")
 	TrustDomain string `json:"trustDomain,omitempty"`

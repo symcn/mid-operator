@@ -86,10 +86,13 @@ func (r *Reconciler) Reconcile(log logr.Logger) error {
 		{Resource: r.clusterRoleBinding, DesiredState: istiodDesiredState},
 		{Resource: r.configMapEnvoy, DesiredState: istiodDesiredState},
 		{Resource: r.deployment, DesiredState: istiodDesiredState},
-		{Resource: r.service, DesiredState: istiodDesiredState},
+		{Resource: r.istiodService, DesiredState: istiodDesiredState},
+		{Resource: r.pilotService, DesiredState: istiodDesiredState},
 		{Resource: r.horizontalPodAutoscaler, DesiredState: istiodDesiredState},
 		{Resource: r.podDisruptionBudget, DesiredState: pdbDesiredState},
+		{Resource: r.configMapInjector, DesiredState: istiodDesiredState},
 		{Resource: r.validatingWebhook, DesiredState: istiodDesiredState},
+		{Resource: r.mutatingWebhook, DesiredState: istiodDesiredState},
 	} {
 		o := res.Resource()
 		err := k8sutils.Reconcile(log, r.Client, o, res.DesiredState)

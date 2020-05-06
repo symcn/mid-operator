@@ -7,6 +7,7 @@ require (
 	github.com/coreos/go-semver v0.3.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-logr/logr v0.1.0
+	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/goph/emperror v0.17.2
 	github.com/mholt/caddy v1.0.0
 	github.com/onsi/ginkgo v1.11.0
@@ -17,7 +18,6 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.5
 	golang.org/x/time v0.0.0-20190921001708-c4c64cad1fd0
-	gopkg.in/yaml.v1 v1.0.0-20140924161607-9f9df34309c0
 	istio.io/client-go v0.0.0-20200316192452-065c59267750
 	k8s.io/api v0.17.2
 	k8s.io/apiextensions-apiserver v0.17.2

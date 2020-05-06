@@ -171,7 +171,7 @@ func (r *Reconciler) getLocalityLBConfiguration() *devopsv1beta1.LocalityLBConfi
 }
 
 func (r *Reconciler) meshNetworks() string {
-	marshaledConfig, _ := yaml.Marshal(r.Config.Spec.GetMeshNetworks())
+	marshaledConfig, _ := yaml.Marshal(templates.GetMeshNetworks(r.Config))
 	return string(marshaledConfig)
 }
 

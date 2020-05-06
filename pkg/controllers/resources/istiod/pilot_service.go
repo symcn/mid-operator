@@ -54,7 +54,7 @@ func (r *Reconciler) pilotServicePorts() []apiv1.ServicePort {
 	return ports
 }
 
-func (r *Reconciler) pilotServicervice() runtime.Object {
+func (r *Reconciler) pilotService() runtime.Object {
 	return &apiv1.Service{
 		ObjectMeta: templates.ObjectMeta(ServiceNamePilot, utils.MergeStringMaps(pilotLabels, pilotLabelSelector), r.Config),
 		Spec: apiv1.ServiceSpec{

@@ -135,12 +135,6 @@ func (r *IstioReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		logger.Error(err, "failed to Reconcile istio crd")
 	}
 
-	meshNetworks, err := r.getMeshNetworks(config, logger)
-	if err != nil {
-		return reconcile.Result{}, err
-	}
-	config.Spec.SetMeshNetworks(meshNetworks)
-
 	reconcilers := []resources.ComponentReconciler{
 		base.New(r.Client, config, false),
 		istiod.New(r.Client, r.dynamic, config),
@@ -248,55 +242,4 @@ func (r *IstioReconciler) updateStatus(config *devopsv1beta1.Istio, status devop
 	config.TypeMeta = typeMeta
 	logger.Info("Istio state updated", "status", status)
 	return nil
-}
-
-func (r *IstioReconciler) getMeshNetworks(config *devopsv1beta1.Istio, logger logr.Logger) (*devopsv1beta1.MeshNetworks, error) {
-	meshNetworks := make(map[string]devopsv1beta1.MeshNetwork)
-
-	localNetwork := devopsv1beta1.MeshNetwork{
-		Endpoints: []devopsv1beta1.MeshNetworkEndpoint{
-			{
-				FromRegistry: config.Spec.ClusterName,
-			},
-		},
-	}
-
-	if len(config.Status.GatewayAddress) > 0 {
-		gateways := make([]devopsv1beta1.MeshNetworkGateway, 0)
-		for _, address := range config.Status.GatewayAddress {
-			gateways = append(gateways, devopsv1beta1.MeshNetworkGateway{
-				Address: address, Port: 443,
-			})
-		}
-		localNetwork.Gateways = gateways
-	}
-
-	meshNetworks[config.Spec.NetworkName] = localNetwork
-
-	// remoteIstios := remoteistioCtrl.GetRemoteIstiosByOwnerReference(r.Mgr, config, logger)
-	// for _, remoteIstio := range remoteIstios {
-	// 	gateways := make([]devopsv1beta1.MeshNetworkGateway, 0)
-	// 	if len(remoteIstio.Status.GatewayAddress) > 0 {
-	// 		for _, address := range remoteIstio.Status.GatewayAddress {
-	// 			gateways = append(gateways, istiov1beta1.MeshNetworkGateway{
-	// 				Address: address, Port: 443,
-	// 			})
-	// 		}
-	// 	} else {
-	// 		continue
-	// 	}
-	//
-	// 	meshNetworks[remoteIstio.Name] = devopsv1beta1.MeshNetwork{
-	// 		Endpoints: []istiov1beta1.MeshNetworkEndpoint{
-	// 			{
-	// 				FromRegistry: remoteIstio.Name,
-	// 			},
-	// 		},
-	// 		Gateways: gateways,
-	// 	}
-	// }
-
-	return &devopsv1beta1.MeshNetworks{
-		Networks: meshNetworks,
-	}, nil
 }

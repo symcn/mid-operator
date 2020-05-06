@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"github.com/symcn/mid-operator/pkg/controllers/istio"
+	"github.com/symcn/mid-operator/pkg/controllers/meshgateway"
 	"github.com/symcn/mid-operator/pkg/controllers/sidecar"
 	"github.com/symcn/mid-operator/pkg/option"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -34,6 +35,7 @@ func AddToManager(m manager.Manager, opt *option.ControllersManagerOption) error
 
 	if opt.EnableIstio {
 		AddToManagerFuncs = append(AddToManagerFuncs, istio.Add)
+		AddToManagerFuncs = append(AddToManagerFuncs, meshgateway.Add)
 	}
 
 	for _, f := range AddToManagerFuncs {

@@ -65,7 +65,7 @@ func (r *Reconciler) containerEnvs() []corev1.EnvVar {
 		},
 		{
 			Name:  "MESHNETWORKS_HASH",
-			Value: r.Config.Spec.GetMeshNetworksHash(),
+			Value: templates.GetMeshNetworksHash(r.Config),
 		},
 		{
 			Name:  "PILOT_ENABLE_PROTOCOL_SNIFFING_FOR_OUTBOUND",

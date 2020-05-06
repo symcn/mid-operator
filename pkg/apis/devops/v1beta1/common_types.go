@@ -1,10 +1,6 @@
 package v1beta1
 
 import (
-	"crypto/md5"
-	"encoding/json"
-	"fmt"
-
 	corev1 "k8s.io/api/core/v1"
 )
 
@@ -17,46 +13,6 @@ const (
 	Available       ConfigState = "Available"
 	Unmanaged       ConfigState = "Unmanaged"
 )
-
-type MeshNetworkEndpoint struct {
-	FromCIDR     string `json:"fromCidr,omitempty"`
-	FromRegistry string `json:"fromRegistry,omitempty"`
-}
-
-type MeshNetworkGateway struct {
-	Address string `json:"address"`
-	Port    uint   `json:"port"`
-}
-
-type MeshNetwork struct {
-	Endpoints []MeshNetworkEndpoint `json:"endpoints,omitempty"`
-	Gateways  []MeshNetworkGateway  `json:"gateways,omitempty"`
-}
-
-type MeshNetworks struct {
-	Networks map[string]MeshNetwork `json:"networks"`
-}
-
-func (in *IstioSpec) SetMeshNetworks(networks *MeshNetworks) *IstioSpec {
-	in.MeshNetworks = networks
-	return in
-}
-
-func (in *IstioSpec) GetMeshNetworks() *MeshNetworks {
-	return in.MeshNetworks
-}
-
-func (in *IstioSpec) GetMeshNetworksHash() string {
-	hash := ""
-	j, err := json.Marshal(in.MeshNetworks)
-	if err != nil {
-		return hash
-	}
-
-	hash = fmt.Sprintf("%x", md5.Sum(j))
-
-	return hash
-}
 
 const supportedIstioMinorVersionRegex = "^1.5"
 
@@ -251,9 +207,4 @@ type MeshGatewayConfiguration struct {
 	RequestedNetworkView string `json:"requestedNetworkView,omitempty"`
 	// If present will be appended to the environment variables of the container
 	AdditionalEnvVars []corev1.EnvVar `json:"additionalEnvVars,omitempty"`
-}
-
-type MixerlessTelemetryConfiguration struct {
-	// If set to true, experimental Mixerless http telemetry will be enabled
-	Enabled *bool `json:"enabled,omitempty"`
 }
