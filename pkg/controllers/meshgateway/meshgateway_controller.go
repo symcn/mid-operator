@@ -79,7 +79,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Watch for changes to MeshGateway
-	err = c.Watch(&source.Kind{Type: &devopsv1beta1.MeshGateway{TypeMeta: metav1.TypeMeta{Kind: "MeshGateway", APIVersion: "istio.banzaicloud.io/v1beta1"}}}, &handler.EnqueueRequestForObject{}, GetWatchPredicateForMeshGateway())
+	err = c.Watch(&source.Kind{Type: &devopsv1beta1.MeshGateway{}}, &handler.EnqueueRequestForObject{}, GetWatchPredicateForMeshGateway())
 	if err != nil {
 		return err
 	}
@@ -141,19 +141,13 @@ func (r *ReconcileMeshGateway) Reconcile(request reconcile.Request) (reconcile.R
 		return reconcile.Result{}, errors.WithStack(err)
 	}
 
-	var configs devopsv1beta1.IstioList
-	err = r.Client.List(context.TODO(), &configs, &client.ListOptions{})
+	istio, err := r.getIstioForMeshGateway()
 	if err != nil {
-		return reconcile.Result{}, emperror.Wrap(err, "could not list istio resources")
+		log.Error(err, "failed to get istio")
+		return reconcile.Result{}, err
 	}
 
-	if len(configs.Items) != 1 {
-		return reconcile.Result{}, emperror.Wrap(err, "could not found istio resource")
-	}
-
-	istio := configs.Items[0]
-	reconciler := gateways.New(r.Client, r.dynamic, &istio, instance)
-
+	reconciler := gateways.New(r.Client, r.dynamic, istio, instance)
 	err = reconciler.Reconcile(log)
 	if err == nil {
 		instance.Status.GatewayAddress, err = reconciler.GetGatewayAddress()
@@ -215,4 +209,19 @@ func updateStatus(c client.Client, instance *devopsv1beta1.MeshGateway, status d
 	instance.TypeMeta = typeMeta
 	logger.Info("mesh gateway state updated", "status", status)
 	return nil
+}
+
+func (r *ReconcileMeshGateway) getIstioForMeshGateway() (*devopsv1beta1.Istio, error) {
+	var configs devopsv1beta1.IstioList
+	err := r.Client.List(context.TODO(), &configs, &client.ListOptions{})
+	if err != nil {
+		return nil, emperror.Wrap(err, "could not list istio resources")
+	}
+
+	if len(configs.Items) != 1 {
+		return nil, emperror.Wrap(err, "could not found istio resource")
+	}
+
+	istio := &configs.Items[0]
+	return istio, nil
 }

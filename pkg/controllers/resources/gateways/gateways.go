@@ -88,7 +88,7 @@ func (r *Reconciler) Reconcile(log logr.Logger) error {
 }
 
 func (r *Reconciler) waitForIstiod() error {
-	if !utils.PointerToBool(r.Config.Spec.Istiod.Enabled) || utils.PointerToBool(r.Config.Spec.SidecarInjector.Enabled) {
+	if !utils.PointerToBool(r.Config.Spec.Istiod.Enabled) {
 		return nil
 	}
 
