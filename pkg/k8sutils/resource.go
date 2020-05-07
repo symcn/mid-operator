@@ -112,27 +112,27 @@ func prepareResourceForUpdate(current, desired runtime.Object) {
 
 // IsObjectChanged checks whether there is an actual difference between the two objects
 func IsObjectChanged(oldObj, newObj runtime.Object, ignoreStatusChange bool) (bool, error) {
-	old := oldObj.DeepCopyObject()
-	new := newObj.DeepCopyObject()
+	oldCopy := oldObj.DeepCopyObject()
+	newCopy := newObj.DeepCopyObject()
 
 	metaAccessor := meta.NewAccessor()
-	currentResourceVersion, err := metaAccessor.ResourceVersion(old)
+	currentResourceVersion, err := metaAccessor.ResourceVersion(oldCopy)
 	if err == nil {
-		metaAccessor.SetResourceVersion(new, currentResourceVersion)
+		metaAccessor.SetResourceVersion(newCopy, currentResourceVersion)
 	}
 
-	patchResult, err := patch.DefaultPatchMaker.Calculate(old, new, patch.IgnoreStatusFields())
+	patchResult, err := patch.DefaultPatchMaker.Calculate(oldCopy, newCopy, patch.IgnoreStatusFields())
 	if err != nil {
-		return true, emperror.WrapWith(err, "could not match objects", "kind", old.GetObjectKind())
+		return true, emperror.WrapWith(err, "could not match objects", "kind", oldCopy.GetObjectKind())
 	} else if patchResult.IsEmpty() {
 		return false, nil
 	}
 
 	if ignoreStatusChange {
-		var patch map[string]interface{}
-		json.Unmarshal(patchResult.Patch, &patch)
-		delete(patch, "status")
-		if len(patch) == 0 {
+		var patchMap map[string]interface{}
+		json.Unmarshal(patchResult.Patch, &patchMap)
+		delete(patchMap, "status")
+		if len(patchMap) == 0 {
 			return false, nil
 		}
 	}

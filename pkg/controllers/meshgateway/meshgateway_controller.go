@@ -42,11 +42,11 @@ func GetWatchPredicateForMeshGateway() predicate.Funcs {
 			return true
 		},
 		UpdateFunc: func(e event.UpdateEvent) bool {
-			old := e.ObjectOld.(*devopsv1beta1.MeshGateway)
-			new := e.ObjectNew.(*devopsv1beta1.MeshGateway)
-			if !reflect.DeepEqual(old.Spec, new.Spec) ||
-				old.GetDeletionTimestamp() != new.GetDeletionTimestamp() ||
-				old.GetGeneration() != new.GetGeneration() {
+			oldObj := e.ObjectOld.(*devopsv1beta1.MeshGateway)
+			newObj := e.ObjectNew.(*devopsv1beta1.MeshGateway)
+			if !reflect.DeepEqual(oldObj.Spec, newObj.Spec) ||
+				oldObj.GetDeletionTimestamp() != newObj.GetDeletionTimestamp() ||
+				oldObj.GetGeneration() != newObj.GetGeneration() {
 				return true
 			}
 			return false

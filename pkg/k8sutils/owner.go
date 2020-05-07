@@ -26,8 +26,8 @@ func NewOwnerReferenceMatcher(owner runtime.Object, ctrl bool, scheme *runtime.S
 		scheme:       scheme,
 	}
 
-	meta, _ := meta.Accessor(owner)
-	m.ownerMeta = meta
+	accessor, _ := meta.Accessor(owner)
+	m.ownerMeta = accessor
 
 	m.setOwnerTypeGroupKind()
 
